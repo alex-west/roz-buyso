@@ -320,6 +320,7 @@ procedure WorldSetFlag(name: TString50);
 			while (i < MAX_FLAG) and (Length(World.Info.Flags[i]) <> 0) do
 				i := i + 1;
 			World.Info.Flags[i] := name;
+			GameUpdateSidebar;
 		end;
 	end;
 
@@ -327,8 +328,10 @@ procedure WorldClearFlag(name: TString50);
 	var
 		i: integer;
 	begin
-		if WorldGetFlagPosition(name) >= 0 then
+		if WorldGetFlagPosition(name) >= 0 then begin
 			World.Info.Flags[WorldGetFlagPosition(name)] := '';
+			GameUpdateSidebar;
+		end;
 	end;
 
 function OopStringToWord(input: TString50): TString50;

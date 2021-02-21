@@ -85,6 +85,9 @@ interface
 	procedure GameDebugPrompt;
 	procedure GameTitleLoop;
 	procedure GamePrintRegisterMessage;
+
+	procedure InitInventoryDefs;
+	function InventoryGetDefIndex(flag: TString50): integer;
 const
 	ProgressAnimColors: array[0 .. 7] of byte = ($14, $1C, $15, $1D, $16, $1E, $17, $1F);
 	ProgressAnimStrings: array[0 .. 7] of string[5] =
@@ -1092,6 +1095,8 @@ procedure GameUpdateSidebar;
 	var
 		numStr: string[8];
 		i: integer;
+		j: integer;
+		y: integer;
 	begin
 		if GameStateElement = E_PLAYER then begin
 
@@ -1101,7 +1106,24 @@ procedure GameUpdateSidebar;
 			Str(World.Info.Gems, numStr);
 			VideoWriteText(72, 7, $1E, numStr + ' ');
 			
-			VideoWriteText(62, 10, $1F, '- Items');
+			y := 10;
+			for i := 1 to MAX_FLAG do begin
+				if (Length(World.Info.Flags[i]) <> 0) then begin
+					j := InventoryGetDefIndex(World.Info.Flags[i]);
+					if j >= 0 then begin
+						SidebarClearLine(y);
+						VideoWriteText(62,y, $1F, InventoryDefs[j].Char + ' ');
+						VideoWriteText(64,y, $1F, InventoryDefs[j].Name);
+						y := y + 1;
+					end;
+				end;
+			end;
+			
+			while i <= MAX_FLAG do begin
+				SidebarClearLine(y);
+				i := i + 1;
+				y := y + 1;
+			end;			
 			
 			if SoundEnabled then
 				VideoWriteText(75, 21, $1F, #14)
@@ -1399,7 +1421,7 @@ procedure GamePlayLoop(boardChanged: boolean);
 				VideoWriteText(64, 7, $1E, '   Gems:');
 				VideoWriteText(62, 7, $1B, ElementDefs[E_GEM].Character);
 
-				VideoWriteText(62, 9, $1F, 'Inventory      ');
+				VideoWriteText(62, 9, $1E, 'Inventory:     ');
 
 				VideoWriteText(62, 21, $70, #18' '#29);
 				VideoWriteText(65, 21, $1F, ' Move');
@@ -1440,6 +1462,8 @@ procedure GamePlayLoop(boardChanged: boolean);
 			end;
 		end;
 	begin
+		InitInventoryDefs;
+		
 		GameDrawSidebar;
 		GameUpdateSidebar;
 
@@ -1693,5 +1717,45 @@ procedure GamePrintRegisterMessage;
 		end;
 	end;
 
+procedure InitInventoryDefs;
+	var
+		i: integer;
+	begin
+		for i := 0 to MAX_INVENTORY do
+			with InventoryDefs[i] do begin
+				Flag := ' ';
+				Name := ' ';
+				Char := #1;
+			end;
+		
+		InventoryDefs[1].Flag := 'SCALP';
+		InventoryDefs[1].Name := 'Scalp Degreaser';
+		InventoryDefs[1].Char := #168;
+
+		InventoryDefs[2].Flag := 'LILAC';
+		InventoryDefs[2].Name := 'Lilac Deodorant';
+		InventoryDefs[2].Char := #23;
+
+		InventoryDefs[3].Flag := 'ORANG';
+		InventoryDefs[3].Name := 'Orange Hair Dye';
+		InventoryDefs[3].Char := #235;
+		
+		InventoryDefs[4].Flag := 'TOWEL';
+		InventoryDefs[4].Name := 'Handtowel';
+		InventoryDefs[4].Char := #64;
+
+	end;
+	
+function InventoryGetDefIndex(flag: TString50): integer;
+	var
+		i: integer;
+	begin
+		InventoryGetDefIndex := -1;
+		for i := 1 to MAX_INVENTORY do begin
+			if InventoryDefs[i].Flag = flag then
+				InventoryGetDefIndex := i;
+		end;
+	end;
+	
 begin
 end.

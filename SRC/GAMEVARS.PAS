@@ -39,6 +39,8 @@ interface
 		TORCH_DX = 8;
 		TORCH_DY = 5;
 		TORCH_DIST_SQR = 50;
+		
+		MAX_INVENTORY = 60;
 	type
 		TString50 = string[50];
 		TCoord = record
@@ -147,6 +149,12 @@ interface
 		end;
 		THighScoreList = array[1 .. HIGH_SCORE_COUNT] of THighScoreEntry;
 		TIoTmpBuf = array[0 .. 19999] of byte;
+
+		TInventoryEntry = record
+			Flag: string[20];
+			Name: string[15];
+			Char: char;
+		end;
 	var
 		PlayerDirX: integer;
 		PlayerDirY: integer;
@@ -214,6 +222,8 @@ interface
 		WorldFileDescCount: integer;
 		WorldFileDescKeys: array[1 .. 10] of TString50;
 		WorldFileDescValues: array[1 .. 10] of TString50;
+		
+		InventoryDefs: array[1 .. 60] of TInventoryEntry;
 	const
 		E_EMPTY = 0;
 		E_BOARD_EDGE = 1;
