@@ -1094,50 +1094,19 @@ procedure GameUpdateSidebar;
 		i: integer;
 	begin
 		if GameStateElement = E_PLAYER then begin
-			if Board.Info.TimeLimitSec > 0 then begin
-				VideoWriteText(64, 6, $1E, '   Time:');
-				Str(Board.Info.TimeLimitSec - World.Info.BoardTimeSec, numStr);
-				VideoWriteText(72, 6, $1E, numStr + ' ');
-			end else begin
-				SidebarClearLine(6);
-			end;
 
 			if World.Info.Health < 0 then
 				World.Info.Health := 0;
 
-			Str(World.Info.Health, numStr);
-			VideoWriteText(72, 7, $1E, numStr + ' ');
-			Str(World.Info.Ammo, numStr);
-			VideoWriteText(72, 8, $1E, numStr + '  ');
-			Str(World.Info.Torches, numStr);
-			VideoWriteText(72, 9, $1E, numStr + ' ');
 			Str(World.Info.Gems, numStr);
-			VideoWriteText(72, 10, $1E, numStr + ' ');
-			Str(World.Info.Score, numStr);
-			VideoWriteText(72, 11, $1E, numStr + ' ');
-
-			if World.Info.TorchTicks = 0 then
-				VideoWriteText(75, 9, $16, '    ')
-			else begin
-				for i := 2 to 5 do begin
-					if i <= ((World.Info.TorchTicks * 5) div TORCH_DURATION) then
-						VideoWriteText(73 + i, 9, $16, #177)
-					else
-						VideoWriteText(73 + i, 9, $16, #176);
-				end;
-			end;
-
-			for i := 1 to 7 do begin
-				if World.Info.Keys[i] then
-					VideoWriteText(71 + i, 12, $18 + i, ElementDefs[E_KEY].Character)
-				else
-					VideoWriteText(71 + i, 12, $1F, ' ');
-			end;
-
+			VideoWriteText(72, 7, $1E, numStr + ' ');
+			
+			VideoWriteText(62, 10, $1F, '- Items');
+			
 			if SoundEnabled then
-				VideoWriteText(65, 15, $1F, ' Be quiet')
+				VideoWriteText(75, 21, $1F, #14)
 			else
-				VideoWriteText(65, 15, $1F, ' Be noisy');
+				VideoWriteText(75, 21, $10, #14);
 
 			if DebugEnabled then begin
 				Str(MemAvail, numStr);
@@ -1424,35 +1393,24 @@ procedure GamePlayLoop(boardChanged: boolean);
 			SidebarClearLine(1);
 			SidebarClearLine(2);
 			VideoWriteText(61, 0, $1F, '    - - - - -      ');
-			VideoWriteText(62, 1, $70, '      ZZT      ');
+			VideoWriteText(62, 1, $70, '      ZZT*     ');
 			VideoWriteText(61, 2, $1F, '    - - - - -      ');
 			if GameStateElement = E_PLAYER then begin
-				VideoWriteText(64, 7, $1E, ' Health:');
-				VideoWriteText(64, 8, $1E, '   Ammo:');
-				VideoWriteText(64, 9, $1E, 'Torches:');
-				VideoWriteText(64, 10, $1E, '   Gems:');
-				VideoWriteText(64, 11, $1E, '  Score:');
-				VideoWriteText(64, 12, $1E, '   Keys:');
-				VideoWriteText(62, 7, $1F, ElementDefs[E_PLAYER].Character);
-				VideoWriteText(62, 8, $1B, ElementDefs[E_AMMO].Character);
-				VideoWriteText(62, 9, $16, ElementDefs[E_TORCH].Character);
-				VideoWriteText(62, 10, $1B, ElementDefs[E_GEM].Character);
-				VideoWriteText(62, 12, $1F, ElementDefs[E_KEY].Character);
-				VideoWriteText(62, 14, $70, ' T ');
-				VideoWriteText(65, 14, $1F, ' Torch');
-				VideoWriteText(62, 15, $30, ' B ');
-				VideoWriteText(62, 16, $70, ' H ');
-				VideoWriteText(65, 16, $1F, ' Help');
-				VideoWriteText(67, 18, $30, ' '#24#25#26#27' ');
-				VideoWriteText(72, 18, $1F, ' Move');
-				VideoWriteText(61, 19, $70, ' Shift '#24#25#26#27' ');
-				VideoWriteText(72, 19, $1F, ' Shoot');
-				VideoWriteText(62, 21, $70, ' S ');
-				VideoWriteText(65, 21, $1F, ' Save game');
-				VideoWriteText(62, 22, $30, ' P ');
-				VideoWriteText(65, 22, $1F, ' Pause');
+				VideoWriteText(64, 7, $1E, '   Gems:');
+				VideoWriteText(62, 7, $1B, ElementDefs[E_GEM].Character);
+
+				VideoWriteText(62, 9, $1F, 'Inventory      ');
+
+				VideoWriteText(62, 21, $70, #18' '#29);
+				VideoWriteText(65, 21, $1F, ' Move');
+				VideoWriteText(62, 22, $30, ' H ');
+				VideoWriteText(65, 22, $1F, ' Help');
 				VideoWriteText(62, 23, $70, ' Q ');
 				VideoWriteText(65, 23, $1F, ' Quit');
+
+				VideoWriteText(71, 21, $30, ' B ');
+				VideoWriteText(71, 22, $70, ' S ');
+				VideoWriteText(74, 22, $1F, ' Save');
 			end else if GameStateElement = E_MONITOR then begin
 				SidebarPromptSlider(false, 66, 21, 'Game speed:;FS', TickSpeed);
 				VideoWriteText(62, 21, $70, ' S ');
