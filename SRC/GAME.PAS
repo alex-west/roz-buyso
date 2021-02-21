@@ -87,6 +87,7 @@ interface
 	procedure GamePrintRegisterMessage;
 
 	procedure InitInventoryDefs;
+	procedure InventoryLoad;
 	function InventoryGetDefIndex(flag: TString50): integer;
 const
 	ProgressAnimColors: array[0 .. 7] of byte = ($14, $1C, $15, $1D, $16, $1E, $17, $1F);
@@ -757,6 +758,7 @@ function WorldLoad(filename, extension: TString50; titleOnly: boolean): boolean;
 				WorldLoad := true;
 
 				HighScoresLoad;
+				InventoryLoad;
 
 				SidebarClearLine(5);
 			end;
@@ -1462,7 +1464,7 @@ procedure GamePlayLoop(boardChanged: boolean);
 			end;
 		end;
 	begin
-		InitInventoryDefs;
+		{InitInventoryDefs;}
 		
 		GameDrawSidebar;
 		GameUpdateSidebar;
@@ -1744,6 +1746,58 @@ procedure InitInventoryDefs;
 		InventoryDefs[4].Name := 'Handtowel';
 		InventoryDefs[4].Char := #64;
 
+	end;
+	
+procedure InventoryLoad;
+	var
+		tf: text;
+		i: integer;
+		tempChar: byte;
+	begin
+		for i := 1 to MAX_INVENTORY do
+			with InventoryDefs[i] do begin
+				Flag := ' ';
+				Name := ' ';
+				Char := #32;
+			end;
+
+		Assign(tf, World.Info.Name + '.INV');
+		Reset(tf);
+		
+		if IOResult = 0 then begin
+			i := 1;
+			while (IOResult = 0) and (not Eof(tf)) do begin
+				ReadLn(tf, InventoryDefs[i].Flag);
+				ReadLn(tf, InventoryDefs[i].Name);
+				ReadLn(tf, tempChar);
+				InventoryDefs[i].Char := Char(tempChar);
+				Inc(i);
+			end;
+		end else begin
+			{ invalid file }
+		end;
+		Close(tf);
+		
+{		Assign(f, World.Info.Name + '.INV');
+		Reset(f);
+		
+		if IOResult = 0 then begin
+			Read(f, HighScoreList);
+		end;
+		
+		
+		while (IOResult = 0) and (not Eof(tf)) do begin
+			Inc(LineCount);
+			New(Lines[LineCount]);
+			ReadLn(tf, Lines[LineCount]^);
+		end;
+		Close(f);
+		if IOResult <> 0 then begin
+			for i := 1 to HIGH_SCORE_COUNT do begin
+				HighScoreList[i].Name := '';
+				HighScoreList[i].Score := -1;
+			end;
+		end;}
 	end;
 	
 function InventoryGetDefIndex(flag: TString50): integer;
