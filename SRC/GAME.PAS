@@ -86,7 +86,6 @@ interface
 	procedure GameTitleLoop;
 	procedure GamePrintRegisterMessage;
 
-	procedure InitInventoryDefs;
 	procedure InventoryLoad;
 	function InventoryGetDefIndex(flag: TString50): integer;
 const
@@ -1114,7 +1113,7 @@ procedure GameUpdateSidebar;
 					j := InventoryGetDefIndex(World.Info.Flags[i]);
 					if j >= 0 then begin
 						SidebarClearLine(y);
-						VideoWriteText(62,y, $1F, InventoryDefs[j].Char + ' ');
+						VideoWriteText(62,y, InventoryDefs[j].Color, InventoryDefs[j].Char + ' ');
 						VideoWriteText(64,y, $1F, InventoryDefs[j].Name);
 						y := y + 1;
 					end;
@@ -1464,8 +1463,6 @@ procedure GamePlayLoop(boardChanged: boolean);
 			end;
 		end;
 	begin
-		{InitInventoryDefs;}
-		
 		GameDrawSidebar;
 		GameUpdateSidebar;
 
@@ -1718,35 +1715,6 @@ procedure GamePrintRegisterMessage;
 			end;
 		end;
 	end;
-
-procedure InitInventoryDefs;
-	var
-		i: integer;
-	begin
-		for i := 0 to MAX_INVENTORY do
-			with InventoryDefs[i] do begin
-				Flag := ' ';
-				Name := ' ';
-				Char := #1;
-			end;
-		
-		InventoryDefs[1].Flag := 'SCALP';
-		InventoryDefs[1].Name := 'Scalp Degreaser';
-		InventoryDefs[1].Char := #168;
-
-		InventoryDefs[2].Flag := 'LILAC';
-		InventoryDefs[2].Name := 'Lilac Deodorant';
-		InventoryDefs[2].Char := #23;
-
-		InventoryDefs[3].Flag := 'ORANG';
-		InventoryDefs[3].Name := 'Orange Hair Dye';
-		InventoryDefs[3].Char := #235;
-		
-		InventoryDefs[4].Flag := 'TOWEL';
-		InventoryDefs[4].Name := 'Handtowel';
-		InventoryDefs[4].Char := #64;
-
-	end;
 	
 procedure InventoryLoad;
 	var
@@ -1759,6 +1727,7 @@ procedure InventoryLoad;
 				Flag := ' ';
 				Name := ' ';
 				Char := #32;
+				Color := 31
 			end;
 
 		Assign(tf, World.Info.Name + '.INV');
@@ -1771,6 +1740,7 @@ procedure InventoryLoad;
 				ReadLn(tf, InventoryDefs[i].Name);
 				ReadLn(tf, tempChar);
 				InventoryDefs[i].Char := Char(tempChar);
+				ReadLn(tf, InventoryDefs[i].Color);
 				Inc(i);
 			end;
 		end else begin
@@ -1778,26 +1748,6 @@ procedure InventoryLoad;
 		end;
 		Close(tf);
 		
-{		Assign(f, World.Info.Name + '.INV');
-		Reset(f);
-		
-		if IOResult = 0 then begin
-			Read(f, HighScoreList);
-		end;
-		
-		
-		while (IOResult = 0) and (not Eof(tf)) do begin
-			Inc(LineCount);
-			New(Lines[LineCount]);
-			ReadLn(tf, Lines[LineCount]^);
-		end;
-		Close(f);
-		if IOResult <> 0 then begin
-			for i := 1 to HIGH_SCORE_COUNT do begin
-				HighScoreList[i].Name := '';
-				HighScoreList[i].Score := -1;
-			end;
-		end;}
 	end;
 	
 function InventoryGetDefIndex(flag: TString50): integer;

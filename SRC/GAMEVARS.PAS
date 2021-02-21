@@ -152,8 +152,9 @@ interface
 
 		TInventoryEntry = record
 			Flag: string[20];
-			Name: string[15];
+			Name: string[20];
 			Char: char;
+			Color: byte;
 		end;
 	var
 		PlayerDirX: integer;
@@ -223,7 +224,7 @@ interface
 		WorldFileDescKeys: array[1 .. 10] of TString50;
 		WorldFileDescValues: array[1 .. 10] of TString50;
 		
-		InventoryDefs: array[1 .. 60] of TInventoryEntry;
+		InventoryDefs: array[1 .. MAX_INVENTORY] of TInventoryEntry;
 	const
 		E_EMPTY = 0;
 		E_BOARD_EDGE = 1;
