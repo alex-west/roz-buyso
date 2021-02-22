@@ -1122,31 +1122,33 @@ procedure GameUpdateSidebar;
 			Str(World.Info.Score, numStr);
 			VideoWriteText(72, 11, $1E, numStr + ' ');
 			
-			y := 14;
-			for i := 1 to MAX_FLAG do begin
-				if (Length(World.Info.Flags[i]) <> 0) then begin
-					j := InventoryGetDefIndex(World.Info.Flags[i]);
-					if j >= 0 then begin
-						SidebarClearLine(y);
-						VideoWriteText(62,y, InventoryDefs[j].Color, InventoryDefs[j].Char + ' ');
-						VideoWriteText(64,y, $1F, InventoryDefs[j].Name);
-						y := y + 1;
+			if InventoryEnabled = true then begin
+				y := 14;
+				for i := 1 to MAX_FLAG do begin
+					if (Length(World.Info.Flags[i]) <> 0) then begin
+						j := InventoryGetDefIndex(World.Info.Flags[i]);
+						if j >= 0 then begin
+							SidebarClearLine(y);
+							VideoWriteText(62,y, InventoryDefs[j].Color, InventoryDefs[j].Char + ' ');
+							VideoWriteText(64,y, $1F, InventoryDefs[j].Name);
+							y := y + 1;
+						end;
 					end;
 				end;
+				
+				while i <= MAX_FLAG do begin
+					SidebarClearLine(y);
+					i := i + 1;
+					y := y + 1;
+				end;
+			
+			end else begin
+				if SoundEnabled then
+					VideoWriteText(65, 15, $1F, ' Be quiet')
+				else
+					VideoWriteText(65, 15, $1F, ' Be noisy');
 			end;
 			
-			while i <= MAX_FLAG do begin
-				SidebarClearLine(y);
-				i := i + 1;
-				y := y + 1;
-			end;			
-			
-{			
-			if SoundEnabled then
-				VideoWriteText(65, 15, $1F, ' Be quiet')
-			else
-				VideoWriteText(65, 15, $1F, ' Be noisy');
-}			
 			if DebugEnabled then begin
 				Str(MemAvail, numStr);
 				VideoWriteText(69, 4, $1E, 'm' + numStr + ' ');
@@ -1446,24 +1448,26 @@ procedure GamePlayLoop(boardChanged: boolean);
 				VideoWriteText(62, 9, $16, ElementDefs[E_TORCH].Character);
 				VideoWriteText(62, 10, $1B, ElementDefs[E_GEM].Character);
 				VideoWriteText(62, 12, $1F, ElementDefs[E_KEY].Character);
-				VideoWriteText(62, 13, $1E, 'Inventory:     ');
-{
-				VideoWriteText(62, 14, $70, ' T ');
-				VideoWriteText(65, 14, $1F, ' Torch');
-				VideoWriteText(62, 15, $30, ' B ');
-				VideoWriteText(62, 16, $70, ' H ');
-				VideoWriteText(65, 16, $1F, ' Help');
-				VideoWriteText(67, 18, $30, ' '#24#25#26#27' ');
-				VideoWriteText(72, 18, $1F, ' Move');
-				VideoWriteText(61, 19, $70, ' Shift '#24#25#26#27' ');
-				VideoWriteText(72, 19, $1F, ' Shoot');
-				VideoWriteText(62, 21, $70, ' S ');
-				VideoWriteText(65, 21, $1F, ' Save game');
-				VideoWriteText(62, 22, $30, ' P ');
-				VideoWriteText(65, 22, $1F, ' Pause');
-				VideoWriteText(62, 23, $70, ' Q ');
-				VideoWriteText(65, 23, $1F, ' Quit');
-}
+				
+				if InventoryEnabled = true then begin
+					VideoWriteText(62, 13, $1E, 'Inventory:     ');
+				end else begin
+					VideoWriteText(62, 14, $70, ' T ');
+					VideoWriteText(65, 14, $1F, ' Torch');
+					VideoWriteText(62, 15, $30, ' B ');
+					VideoWriteText(62, 16, $70, ' H ');
+					VideoWriteText(65, 16, $1F, ' Help');
+					VideoWriteText(67, 18, $30, ' '#24#25#26#27' ');
+					VideoWriteText(72, 18, $1F, ' Move');
+					VideoWriteText(61, 19, $70, ' Shift '#24#25#26#27' ');
+					VideoWriteText(72, 19, $1F, ' Shoot');
+					VideoWriteText(62, 21, $70, ' S ');
+					VideoWriteText(65, 21, $1F, ' Save game');
+					VideoWriteText(62, 22, $30, ' P ');
+					VideoWriteText(65, 22, $1F, ' Pause');
+					VideoWriteText(62, 23, $70, ' Q ');
+					VideoWriteText(65, 23, $1F, ' Quit');
+				end;
 			end else if GameStateElement = E_MONITOR then begin
 				SidebarPromptSlider(false, 66, 21, 'Game speed:;FS', TickSpeed);
 				VideoWriteText(62, 21, $70, ' S ');
@@ -1752,6 +1756,7 @@ procedure InventoryLoad;
 		i: integer;
 		tempChar: byte;
 	begin
+		InventoryEnabled := false;
 		for i := 1 to MAX_INVENTORY do
 			with InventoryDefs[i] do begin
 				Flag := ' ';
@@ -1764,6 +1769,7 @@ procedure InventoryLoad;
 		Reset(tf);
 		
 		if IOResult = 0 then begin
+			InventoryEnabled := true;
 			i := 1;
 			while (IOResult = 0) and (not Eof(tf)) do begin
 				ReadLn(tf, InventoryDefs[i].Flag);

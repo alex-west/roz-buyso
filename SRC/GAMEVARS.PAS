@@ -224,6 +224,7 @@ interface
 		WorldFileDescKeys: array[1 .. 10] of TString50;
 		WorldFileDescValues: array[1 .. 10] of TString50;
 		
+		InventoryEnabled: boolean;
 		InventoryDefs: array[1 .. MAX_INVENTORY] of TInventoryEntry;
 	const
 		E_EMPTY = 0;
