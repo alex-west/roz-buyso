@@ -93,10 +93,10 @@ procedure GameConfigure;
 		Writeln('                                 <=-  ZZT  -=>');
 		TextColor(Yellow);
 		if Length(ConfigRegistration) = 0 then
-			Writeln('                             Shareware version 3.2')
+			Writeln('                          Inventory Display Fork v0.1')
 		else
-			Writeln('                                  Version  3.2');
-		Writeln('                            Created by Tim Sweeney');
+			Writeln('                          Inventory Display Fork v0.1');
+		Writeln('                          Orignal game by Tim Sweeney');
 		GotoXY(1, 7);
 		TextColor(Blue);
 		Write('================================================================================');
