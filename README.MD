@@ -1,11 +1,25 @@
-# The Reconstruction of ZZT
+# Reconstruction of ZZT - Inventory Display Fork
 
-The Reconstruction of ZZT is a reverse-engineered recreation of the source code to the last official release of
-[ZZT](https://museumofzzt.com/about-zzt), ZZT 3.2. The output executable is byte-for-byte identical with said
-release, which means that the source code accurately represents the original engine's behavior.
+This is a fork of the [Reconstruction of ZZT](https://github.com/asiekierka/reconstruction-of-zzt). For ZZT worlds
+that use flag-based inventory systems, it is capable of displaying the player's inventory in the game's sidebar if
+the world author provides a .INV file. I made this for my own ZZT world, [BUYSO](https://museumofzzt.com/file/b/BUYSO.zip),
+though the approach is general enough to work for most games, past, present, or future. Games that have label-based
+inventories, however, are not supported by this approach.
 
-The intent behind this project is to facilitate improved preservation and accessibility of ZZT's worlds and community,
-as well as facilitate new, exciting developments.
+INV files are stored as plaintext in the following format:
+
+```
+FLAG (all caps)
+Item Name (Limit 20 character (only 16 will be displayed))
+Character Number (Decimal)
+Character Color (Decimal)
+... (Repeat)
+```
+
+There is an arbitrary limit of 64 unique inventory items (chosen because BUYSO has 60 items), but this can be trivially changed
+if needed.
+
+The remainder of the original README.MD from the Reconstruction of ZZT will now be presented verbatim:
 
 ## Frequently Asked Questions
 

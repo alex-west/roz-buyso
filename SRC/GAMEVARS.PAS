@@ -40,7 +40,7 @@ interface
 		TORCH_DY = 5;
 		TORCH_DIST_SQR = 50;
 		
-		MAX_INVENTORY = 60;
+		MAX_INVENTORY = 64;
 	type
 		TString50 = string[50];
 		TCoord = record
