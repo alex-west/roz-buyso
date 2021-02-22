@@ -1784,6 +1784,8 @@ procedure InventoryLoad;
 		end;
 		Close(tf);
 		
+		{ Clear the IOResult flag because it doesn't matter if this file doesn't exist }
+		if IOResult <> 0 then begin end;
 	end;
 	
 function InventoryGetDefIndex(flag: TString50): integer;
