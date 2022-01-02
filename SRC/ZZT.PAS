@@ -93,9 +93,9 @@ procedure GameConfigure;
 		Writeln('                                 <=-  ZZT  -=>');
 		TextColor(Yellow);
 		if Length(ConfigRegistration) = 0 then
-			Writeln('                          Inventory Display Fork v0.1')
+			Writeln('                          Inventory Display Fork v1.0')
 		else
-			Writeln('                          Inventory Display Fork v0.1');
+			Writeln('                          Inventory Display Fork v1.0');
 		Writeln('                          Orignal game by Tim Sweeney');
 		GotoXY(1, 7);
 		TextColor(Blue);

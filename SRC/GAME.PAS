@@ -1752,9 +1752,12 @@ procedure GamePrintRegisterMessage;
 	
 procedure InventoryLoad;
 	var
+		magicWord: string[20];
+		versionNum: integer;
 		tf: text;
 		i: integer;
 		tempChar: byte;
+		textWindow: TTextWindowState;
 	begin
 		InventoryEnabled := false;
 		for i := 1 to MAX_INVENTORY do
@@ -1769,18 +1772,45 @@ procedure InventoryLoad;
 		Reset(tf);
 		
 		if IOResult = 0 then begin
-			InventoryEnabled := true;
-			i := 1;
-			while (IOResult = 0) and (not Eof(tf)) do begin
-				ReadLn(tf, InventoryDefs[i].Flag);
-				ReadLn(tf, InventoryDefs[i].Name);
-				ReadLn(tf, tempChar);
-				InventoryDefs[i].Char := Char(tempChar);
-				ReadLn(tf, InventoryDefs[i].Color);
-				Inc(i);
+			ReadLn(tf, magicWord);
+			ReadLn(tf, versionNum);
+			
+			if (magicWord = 'INV') and (versionNum = 1) then begin 
+				InventoryEnabled := true;
+				i := 1;
+				while (IOResult = 0) and (not Eof(tf)) and (i <= MAX_INVENTORY) do begin
+					ReadLn(tf, InventoryDefs[i].Flag);
+					ReadLn(tf, InventoryDefs[i].Name);
+					ReadLn(tf, tempChar);
+					InventoryDefs[i].Char := Char(tempChar);
+					ReadLn(tf, InventoryDefs[i].Color);
+					Inc(i);
+				end;
+			end else begin
+				{ Invalid file - Don't fail silently }
+				
+				textWindow.Title := 'INV File Error';
+				TextWindowInitState(textWindow);
+				TextWindowAppend(textWindow, '$INV File Error: ');
+				TextWindowAppend(textWindow, '');
+				TextWindowAppend(textWindow, 'An INV file was detected, but it is');
+				TextWindowAppend(textWindow, 'either formatted incorrectly or');
+				TextWindowAppend(textWindow, 'from an incorrect version.');
+				TextWindowAppend(textWindow, '');
+				TextWindowAppend(textWindow, 'You may play this world without the');
+				TextWindowAppend(textWindow, 'special inventory display.');
+
+				TextWindowDrawOpen(textWindow);
+				TextWindowSelect(textWindow, false, false);
+				TextWindowDrawClose(textWindow);
+				TextWindowFree(textWindow);
+
+				Close(tf);
+				exit;
 			end;
+			
 		end else begin
-			{ invalid file }
+			{ INV file not found (do nothing) }
 		end;
 		Close(tf);
 		

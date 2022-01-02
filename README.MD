@@ -8,6 +8,13 @@ inventories, however, are not supported by this approach.
 
 INV files are stored as plaintext in the following format:
 
+Header:
+```
+INV (Magic Word, Required)
+Version Number (Decimal)
+```
+
+Inventory Entries
 ```
 FLAG (all caps)
 Item Name (Limit 20 character (only 16 will be displayed))
@@ -15,6 +22,8 @@ Character Number (Decimal)
 Character Color (Decimal)
 ... (Repeat)
 ```
+
+Loading a world with an INV file with an invalid header with display an error message, but still allow the player to play the world.
 
 There is an arbitrary limit of 64 unique inventory items (chosen because BUYSO has 60 items), but this can be trivially changed
 if needed.
